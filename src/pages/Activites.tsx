@@ -21,7 +21,6 @@ export default function Activites() {
     refetch, clearMessages
   } = useActivites();
 
-  // Effacer les messages après 4 secondes
   useEffect(() => {
     if (success || error) {
       const timer = setTimeout(clearMessages, 4000);
@@ -36,7 +35,7 @@ export default function Activites() {
   };
 
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="flex h-screen bg-gray-50 dark:bg-gray-900">
       <Sidebar />
 
       <main className="ml-64 flex-1 overflow-y-auto">
@@ -49,7 +48,7 @@ export default function Activites() {
 
         <div className="p-8">
 
-          {/* Messages de succès / erreur */}
+          {/* Messages */}
           {success && (
             <div className="flex items-center gap-3 bg-green-50 border border-green-200 text-green-800 p-4 rounded-2xl mb-6 shadow-sm animate-pulse">
               <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0" />
@@ -67,23 +66,24 @@ export default function Activites() {
           {/* Barre d'action */}
           <div className="flex items-center justify-between mb-6">
 
-            {/* Statistiques rapides */}
+            {/* Stats */}
             <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-xl border border-gray-100 shadow-sm">
+              <div className="flex items-center gap-2 bg-white dark:bg-gray-800 px-4 py-2 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm">
                 <Activity className="w-4 h-4 text-primary-600" />
-                <span className="text-sm font-semibold text-gray-700">
+                <span className="text-sm font-semibold text-gray-700 dark:text-gray-200">
                   {total} activité(s)
                 </span>
               </div>
-              <div className="flex items-center gap-2 bg-green-50 px-4 py-2 rounded-xl border border-green-100">
+
+              <div className="flex items-center gap-2 bg-green-50 dark:bg-green-900/20 px-4 py-2 rounded-xl border border-green-100 dark:border-green-800">
                 <CheckCircle className="w-4 h-4 text-green-600" />
-                <span className="text-sm font-semibold text-green-700">
+                <span className="text-sm font-semibold text-green-700 dark:text-green-400">
                   {activites.filter(a => a.statut === 'VALIDE').length} validée(s)
                 </span>
               </div>
             </div>
 
-            {/* Bouton nouvelle activité */}
+            {/* Button */}
             <button
               onClick={() => setShowForm(true)}
               className="flex items-center gap-2 bg-primary-600 hover:bg-primary-700 text-white font-semibold px-5 py-2.5 rounded-xl transition-all shadow-lg shadow-primary-200 text-sm"
@@ -93,7 +93,7 @@ export default function Activites() {
             </button>
           </div>
 
-          {/* Liste des activités */}
+          {/* Liste */}
           <ActiviteList
             activites={activites}
             loading={loading}
@@ -106,7 +106,7 @@ export default function Activites() {
         </div>
       </main>
 
-      {/* Modal formulaire */}
+      {/* Modal */}
       {showForm && (
         <ActiviteForm
           sources={sources}

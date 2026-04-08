@@ -17,7 +17,7 @@ export default function Dashboard() {
 
   if (loading) {
     return (
-      <div className="flex h-screen">
+      <div className="flex h-screen bg-gray-50 dark:bg-gray-900">
         <Sidebar />
         <main className="ml-64 flex-1 flex items-center justify-center">
           <LoadingSpinner message="Chargement du dashboard carbone..." />
@@ -28,7 +28,7 @@ export default function Dashboard() {
 
   if (error) {
     return (
-      <div className="flex h-screen">
+      <div className="flex h-screen bg-gray-50 dark:bg-gray-900">
         <Sidebar />
         <main className="ml-64 flex-1 flex items-center justify-center">
           <ErrorMessage message={error} onRetry={refetch} />
@@ -48,7 +48,7 @@ export default function Dashboard() {
     (kpis?.co2e_derniere_annee ?? 0) <= (org?.objectif ?? Infinity);
 
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="flex h-screen bg-gray-50 dark:bg-gray-900">
       <Sidebar />
 
       <main className="ml-64 flex-1 overflow-y-auto">
@@ -102,18 +102,17 @@ export default function Dashboard() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
             {/* Répartition scopes */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
               <div className="mb-6">
-                <h2 className="text-lg font-semibold text-gray-900">
+                <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
                   Répartition par Scope
                 </h2>
-                <p className="text-sm text-gray-400">
+                <p className="text-sm text-gray-400 dark:text-gray-500">
                   GHG Protocol — {kpis?.derniere_annee ?? '2024'}
                 </p>
               </div>
               <ScopeChart data={scopes} />
 
-              {/* Détail scopes */}
               {scopes && (
                 <div className="grid grid-cols-3 gap-3 mt-4">
                   {[
@@ -121,10 +120,10 @@ export default function Dashboard() {
                     { key: 'SCOPE_2', color: 'bg-blue-500',   label: 'Scope 2' },
                     { key: 'SCOPE_3', color: 'bg-yellow-500', label: 'Scope 3' },
                   ].map(({ key, color, label }) => (
-                    <div key={key} className="text-center p-3 bg-gray-50 rounded-xl">
+                    <div key={key} className="text-center p-3 bg-gray-50 dark:bg-gray-700 rounded-xl">
                       <div className={`w-3 h-3 ${color} rounded-full mx-auto mb-1`} />
-                      <p className="text-xs font-medium text-gray-600">{label}</p>
-                      <p className="text-sm font-bold text-gray-900">
+                      <p className="text-xs font-medium text-gray-600 dark:text-gray-300">{label}</p>
+                      <p className="text-sm font-bold text-gray-900 dark:text-white">
                         {parseFloat(
                           String(scopes[key as keyof typeof scopes]?.valeur ?? 0)
                         ).toFixed(3)} t
@@ -136,12 +135,12 @@ export default function Dashboard() {
             </div>
 
             {/* Évolution annuelle */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
               <div className="mb-6">
-                <h2 className="text-lg font-semibold text-gray-900">
+                <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
                   Évolution annuelle
                 </h2>
-                <p className="text-sm text-gray-400">
+                <p className="text-sm text-gray-400 dark:text-gray-500">
                   Émissions par scope en tCO2e
                 </p>
               </div>
@@ -153,25 +152,25 @@ export default function Dashboard() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
             {/* Statut MRV */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
               <div className="mb-5">
-                <h2 className="text-lg font-semibold text-gray-900">
+                <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
                   Statut MRV
                 </h2>
-                <p className="text-sm text-gray-400">
+                <p className="text-sm text-gray-400 dark:text-gray-500">
                   Monitoring · Reporting · Vérification
                 </p>
               </div>
               <MRVStatus mrv={mrv} />
 
               {/* Conformité */}
-              <div className="mt-5 p-4 bg-green-50 rounded-xl border border-green-100">
+              <div className="mt-5 p-4 bg-green-50 dark:bg-green-900/20 rounded-xl border border-green-100 dark:border-green-800">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-semibold text-green-800">
+                    <p className="text-sm font-semibold text-green-800 dark:text-green-400">
                       Conformité réglementaire
                     </p>
-                    <p className="text-xs text-green-600 mt-0.5">
+                    <p className="text-xs text-green-600 dark:text-green-500 mt-0.5">
                       GHG Protocol · ISO 14064
                     </p>
                   </div>
@@ -183,15 +182,17 @@ export default function Dashboard() {
             </div>
 
             {/* Activités récentes */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
               <div className="flex items-center justify-between mb-5">
                 <div>
-                  <h2 className="text-lg font-semibold text-gray-900">
+                  <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
                     Activités récentes
                   </h2>
-                  <p className="text-sm text-gray-400">Dernières saisies</p>
+                  <p className="text-sm text-gray-400 dark:text-gray-500">
+                    Dernières saisies
+                  </p>
                 </div>
-                <span className="text-xs bg-gray-100 text-gray-600 px-3 py-1 rounded-full font-medium">
+                <span className="text-xs bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 px-3 py-1 rounded-full font-medium">
                   {activites.length} activité(s)
                 </span>
               </div>

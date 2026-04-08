@@ -1,3 +1,5 @@
+import Rapports from '@/pages/Rapports';
+import Calculs from '@/pages/Calculs';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import Login     from '@/pages/Login';
@@ -28,6 +30,12 @@ export default function AppRouter() {
           <PrivateRoute><Activites /></PrivateRoute>
         } />
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
+        <Route path="/calculs" element={
+  <PrivateRoute><Calculs /></PrivateRoute>
+} />
+<Route path="/rapports" element={
+  <PrivateRoute><Rapports /></PrivateRoute>
+} />
       </Routes>
     </BrowserRouter>
   );

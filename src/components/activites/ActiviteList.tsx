@@ -35,14 +35,14 @@ export default function ActiviteList({
   return (
     <div>
       {/* Filtres */}
-      <div className="flex items-center gap-3 mb-6 p-4 bg-white rounded-2xl border border-gray-100 shadow-sm">
+      <div className="flex items-center gap-3 mb-6 p-4 bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm">
         <Filter className="w-4 h-4 text-gray-400 flex-shrink-0" />
-        <p className="text-sm font-semibold text-gray-600 mr-2">Filtrer :</p>
+        <p className="text-sm font-semibold text-gray-600 dark:text-gray-300 mr-2">Filtrer :</p>
 
         <select
           value={filters.scope ?? ''}
           onChange={e => onFilter({ ...filters, scope: e.target.value || undefined, page: 1 })}
-          className="px-3 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white"
+          className="px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200"
         >
           {SCOPE_OPTIONS.map(opt => (
             <option key={opt.value} value={opt.value}>
@@ -54,7 +54,7 @@ export default function ActiviteList({
         <select
           value={filters.statut ?? ''}
           onChange={e => onFilter({ ...filters, statut: e.target.value || undefined, page: 1 })}
-          className="px-3 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white"
+          className="px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200"
         >
           {STATUT_OPTIONS.map(opt => (
             <option key={opt.value} value={opt.value}>
@@ -63,7 +63,7 @@ export default function ActiviteList({
           ))}
         </select>
 
-        <span className="ml-auto text-sm text-gray-400 font-medium">
+        <span className="ml-auto text-sm text-gray-400 dark:text-gray-500 font-medium">
           {total} activité(s)
         </span>
       </div>
@@ -79,14 +79,16 @@ export default function ActiviteList({
       {!loading && activites.length === 0 && (
         <div className="flex flex-col items-center justify-center py-16 text-gray-400">
           <Inbox className="w-12 h-12 mb-3 opacity-30" />
-          <p className="font-medium">Aucune activité trouvée</p>
-          <p className="text-sm mt-1">
+          <p className="font-medium text-gray-400 dark:text-gray-500">
+            Aucune activité trouvée
+          </p>
+          <p className="text-sm mt-1 text-gray-400 dark:text-gray-500">
             Créez votre première activité carbone
           </p>
         </div>
       )}
 
-      {/* Grille d'activités */}
+      {/* Grille */}
       {!loading && activites.length > 0 && (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
           {activites.map(activite => (
@@ -109,13 +111,15 @@ export default function ActiviteList({
               page: Math.max(1, (filters.page ?? 1) - 1)
             })}
             disabled={(filters.page ?? 1) <= 1}
-            className="px-4 py-2 border border-gray-200 rounded-xl text-sm hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            className="px-4 py-2 border border-gray-200 dark:border-gray-600 rounded-xl text-sm hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors text-gray-700 dark:text-gray-300"
           >
             ← Précédent
           </button>
-          <span className="px-4 py-2 text-sm font-medium text-gray-600">
+
+          <span className="px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-300">
             Page {filters.page ?? 1}
           </span>
+
           <button
             onClick={() => onFilter({
               ...filters,
@@ -124,7 +128,7 @@ export default function ActiviteList({
             disabled={
               ((filters.page ?? 1) * (filters.limite ?? 10)) >= total
             }
-            className="px-4 py-2 border border-gray-200 rounded-xl text-sm hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            className="px-4 py-2 border border-gray-200 dark:border-gray-600 rounded-xl text-sm hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors text-gray-700 dark:text-gray-300"
           >
             Suivant →
           </button>

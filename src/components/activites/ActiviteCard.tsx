@@ -21,7 +21,7 @@ export default function ActiviteCard({
     });
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all p-5">
+    <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-md transition-all p-5">
 
       {/* Header carte */}
       <div className="flex items-start justify-between mb-4">
@@ -30,10 +30,10 @@ export default function ActiviteCard({
             <Leaf className="w-5 h-5 text-primary-600" />
           </div>
           <div>
-            <p className="font-semibold text-gray-900 text-sm">
+            <p className="font-semibold text-gray-900 dark:text-white text-sm">
               {activite.nom_source ?? 'Source inconnue'}
             </p>
-            <p className="text-xs text-gray-400">
+            <p className="text-xs text-gray-400 dark:text-gray-500">
               {activite.categorie ?? '—'}
             </p>
           </div>
@@ -50,16 +50,16 @@ export default function ActiviteCard({
 
       {/* Données */}
       <div className="grid grid-cols-3 gap-3 mb-4">
-        <div className="text-center p-2 bg-gray-50 rounded-lg">
-          <p className="text-xs text-gray-400 mb-0.5">Quantité</p>
-          <p className="text-sm font-bold text-gray-800">
+        <div className="text-center p-2 bg-gray-50 dark:bg-gray-700 rounded-lg">
+          <p className="text-xs text-gray-400 dark:text-gray-500 mb-0.5">Quantité</p>
+          <p className="text-sm font-bold text-gray-800 dark:text-gray-100">
             {parseFloat(activite.quantite).toFixed(0)}
           </p>
           <p className="text-xs text-gray-500">{activite.unite}</p>
         </div>
 
-        <div className="text-center p-2 bg-gray-50 rounded-lg">
-          <p className="text-xs text-gray-400 mb-0.5">CO2e</p>
+        <div className="text-center p-2 bg-gray-50 dark:bg-gray-700 rounded-lg">
+          <p className="text-xs text-gray-400 dark:text-gray-500 mb-0.5">CO2e</p>
           <p className="text-sm font-bold text-green-700">
             {activite.valeur_co2e
               ? parseFloat(activite.valeur_co2e).toFixed(4)
@@ -68,18 +68,18 @@ export default function ActiviteCard({
           <p className="text-xs text-gray-500">tCO2e</p>
         </div>
 
-        <div className="text-center p-2 bg-gray-50 rounded-lg">
-          <p className="text-xs text-gray-400 mb-0.5">Site</p>
-          <p className="text-sm font-bold text-gray-800 truncate">
+        <div className="text-center p-2 bg-gray-50 dark:bg-gray-700 rounded-lg">
+          <p className="text-xs text-gray-400 dark:text-gray-500 mb-0.5">Site</p>
+          <p className="text-sm font-bold text-gray-800 dark:text-gray-100 truncate">
             {activite.site ?? '—'}
           </p>
         </div>
       </div>
 
       {/* Période */}
-      <div className="flex items-center gap-2 mb-4 p-2 bg-blue-50 rounded-lg">
+      <div className="flex items-center gap-2 mb-4 p-2 bg-blue-50 dark:bg-blue-900/20 rounded-lg border-none">
         <Clock className="w-3.5 h-3.5 text-blue-400 flex-shrink-0" />
-        <p className="text-xs text-blue-600 font-medium">
+        <p className="text-xs text-blue-600 dark:text-blue-400 font-medium">
           {formatDate(activite.periode_debut)}
           {' → '}
           {formatDate(activite.periode_fin)}

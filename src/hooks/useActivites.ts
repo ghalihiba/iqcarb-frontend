@@ -1,3 +1,5 @@
+
+
 import api from '@/services/api';
 import {
   useState, useEffect,
@@ -22,7 +24,13 @@ interface UseActivitesReturn {
   total:         number;
   filters:       ActiviteFilters;
   setFilters:    (f: ActiviteFilters) => void;
-  creerActivite: (data: ActiviteFormData) => Promise<boolean>;
+  creerActivite: (
+  data: ActiviteFormData,
+  options?: {
+    onSuccess?: (message: string) => void;
+    onError?: (message: string) => void;
+  }
+) => Promise<boolean>;
   validerActivite: (id: string) => Promise<void>;
   supprimerActivite: (id: string) => Promise<void>;
   refetch:       () => Promise<void>;
@@ -97,26 +105,45 @@ const fetchSources = useCallback(async () => {
 
   // Créer une activité
   const creerActivite = useCallback(async (
-    data: ActiviteFormData
-  ): Promise<boolean> => {
-    setSubmitting(true);
-    setError(null);
-    setSuccess(null);
-    try {
-      await activiteService.create(data);
-      setSuccess('✅ Activité créée avec succès !');
-      await fetchActivites();
-      return true;
-    } catch (err: unknown) {
-      const msg = err instanceof Error
-        ? err.message
-        : 'Erreur lors de la création';
-      setError(msg);
-      return false;
-    } finally {
-      setSubmitting(false);
-    }
-  }, [fetchActivites]);
+  data: ActiviteFormData,
+  options?: {
+    onSuccess?: (message: string) => void;
+    onError?: (message: string) => void;
+  }
+): Promise<boolean> => {
+  setSubmitting(true);
+  setError(null);
+  setSuccess(null);
+
+  try {
+    await activiteService.create(data);
+
+    const message = '✅ Activité créée avec succès !';
+
+    setSuccess(message);
+
+    // 🔥 NOUVEAU : callback toast
+    options?.onSuccess?.(message);
+
+    await fetchActivites();
+    return true;
+
+  } catch (err: unknown) {
+    const msg = err instanceof Error
+      ? err.message
+      : 'Erreur lors de la création';
+
+    setError(msg);
+
+    // 🔥 NOUVEAU : callback toast
+    options?.onError?.(msg);
+
+    return false;
+
+  } finally {
+    setSubmitting(false);
+  }
+}, [fetchActivites]);
 
   // Valider une activité → calcul CO2e automatique
   const validerActivite = useCallback(async (id: string) => {
