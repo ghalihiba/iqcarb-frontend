@@ -3,10 +3,7 @@ import type {
   ActiviteFormData, Source
 } from '@/types/activite.types';
 import { SCOPES } from '@/types/activite.types';
-import {
-  Plus, X, Loader2, Info,
-  ChevronDown, Calendar
-} from 'lucide-react';
+import { X } from 'lucide-react';
 
 interface Props {
   sources:       Source[];
@@ -31,13 +28,12 @@ const initialForm: ActiviteFormData = {
 };
 
 export default function ActiviteForm({
-  sources, orgId, loadingSources,
+  sources, orgId,
   submitting, onSubmit, onClose
 }: Props) {
   const [form, setForm] = useState<ActiviteFormData>(initialForm);
   const [sourcesFiltrees, setSourcesFiltrees] = useState<Source[]>([]);
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [co2ePreview, setCo2ePreview] = useState<string | null>(null);
 
   useEffect(() => {
     if (orgId) setForm(f => ({ ...f, id_organisation: orgId }));
@@ -62,9 +58,6 @@ export default function ActiviteForm({
       id_source,
       unite: source?.unite_activite ?? ''
     }));
-    if (source && form.quantite) {
-      setCo2ePreview('Calcul disponible après validation');
-    }
   };
 
   const validerFormulaire = (): boolean => {
@@ -91,7 +84,6 @@ export default function ActiviteForm({
     if (success) {
       setForm({ ...initialForm, id_organisation: orgId ?? '' });
       setErrors({});
-      setCo2ePreview(null);
     }
   };
 

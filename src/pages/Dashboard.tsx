@@ -1,3 +1,6 @@
+import ConformiteDashboard from '@/components/conformite/ConformiteDashboard';
+import { useConformite }   from '@/hooks/useConformite';
+import AchievementBanner from '@/components/dashboard/AchievementBanner';
 import Sidebar        from '@/components/common/Sidebar';
 import Header         from '@/components/common/Header';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
@@ -13,6 +16,7 @@ import {
 } from 'lucide-react';
 
 export default function Dashboard() {
+  const { data: conformiteData } = useConformite();
   const { dashboard, loading, error, refetch } = useDashboard();
 
   if (loading) {
@@ -60,6 +64,13 @@ export default function Dashboard() {
         />
 
         <div className="p-8 space-y-8">
+          
+
+  {/* Banner */}
+  <AchievementBanner name={org?.nom} />
+
+  {/* KPI Cards */}
+
 
           {/* KPI Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
@@ -164,21 +175,9 @@ export default function Dashboard() {
               <MRVStatus mrv={mrv} />
 
               {/* Conformité */}
-              <div className="mt-5 p-4 bg-green-50 dark:bg-green-900/20 rounded-xl border border-green-100 dark:border-green-800">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-semibold text-green-800 dark:text-green-400">
-                      Conformité réglementaire
-                    </p>
-                    <p className="text-xs text-green-600 dark:text-green-500 mt-0.5">
-                      GHG Protocol · ISO 14064
-                    </p>
-                  </div>
-                  <span className="text-2xl">
-                    {mrv?.monitoring?.statut === 'ACTIF' ? '✅' : '⏳'}
-                  </span>
-                </div>
-              </div>
+             {conformiteData && (
+  <ConformiteDashboard data={conformiteData} />
+)}
             </div>
 
             {/* Activités récentes */}

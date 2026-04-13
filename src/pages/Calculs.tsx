@@ -7,10 +7,9 @@ import api                 from '@/services/api';
 import organisationService from '@/services/organisationService';
 import type { Source }     from '@/types/activite.types';
 import ComparateurScenarios from '@/components/calculs/ComparateurScenarios';
-import { Calculator } from 'lucide-react';
 import {
   BarChart3, Loader2, Leaf,
-  AlertCircle, TrendingUp
+  AlertCircle
 } from 'lucide-react';
 
 interface BilanScope {

@@ -13,11 +13,27 @@ export interface LoginRequest {
   password: string;
 }
 
+export interface RegisterRequest {
+  nom: string;
+  prenom: string;
+  email: string;
+  password: string;
+  role: string;
+  id_organisation?: string;
+}
+
 export interface LoginResponse {
   success:     boolean;
   message:     string;
   token:       string;
   utilisateur: User;
+}
+
+export interface RegisterResponse {
+  success: boolean;
+  message: string;
+  token: string;
+  utilisateur: User & { role?: string };
 }
 
 export interface AuthContextType {
@@ -26,5 +42,7 @@ export interface AuthContextType {
   loading:         boolean;
   isAuthenticated: boolean;
   login:           (email: string, password: string) => Promise<User>;
+  register:        (payload: RegisterRequest) => Promise<User>;
+  refreshProfile:  () => Promise<void>;
   logout:          () => void;
 }

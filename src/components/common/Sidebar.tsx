@@ -1,3 +1,5 @@
+import { GraduationCap } from 'lucide-react';
+import { Shield } from 'lucide-react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth }        from '@/hooks/useAuth';
 import ThemeToggle        from './ThemeToggle';
@@ -17,7 +19,9 @@ const navItems: NavItem[] = [
   { to: '/activites',  icon: Activity,        label: 'Activités'  },
   { to: '/calculs',    icon: BarChart3,        label: 'Calculs'    },
   { to: '/rapports',   icon: FileText,         label: 'Rapports'   },
+  { to: '/conformite', icon: Shield, label: 'Conformité' },
   { to: '/parametres', icon: Settings,         label: 'Paramètres' },
+  { to: '/lms', icon: GraduationCap, label: 'Apprentissage' },
 ];
 
 export default function Sidebar() {

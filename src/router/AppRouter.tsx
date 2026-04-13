@@ -1,3 +1,10 @@
+import LMSHome       from '@/pages/LMSHome';
+import ParcoursDetail from '@/pages/ParcoursDetail';
+import ModuleDetail from '@/pages/ModuleDetail';
+import CoursDetail from '@/pages/CoursDetail';
+import LMSProgression from '@/pages/LMSProgression';
+import Parametres from '@/pages/Parametres';
+import Conformite from '@/pages/Conformite';
 import Rapports from '@/pages/Rapports';
 import Calculs from '@/pages/Calculs';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
@@ -29,13 +36,34 @@ export default function AppRouter() {
         <Route path="/activites" element={
           <PrivateRoute><Activites /></PrivateRoute>
         } />
-        <Route path="*" element={<Navigate to="/dashboard" replace />} />
         <Route path="/calculs" element={
   <PrivateRoute><Calculs /></PrivateRoute>
 } />
 <Route path="/rapports" element={
   <PrivateRoute><Rapports /></PrivateRoute>
 } />
+<Route path="/conformite" element={
+  <PrivateRoute><Conformite /></PrivateRoute>
+} />
+<Route path="/lms" element={
+  <PrivateRoute><LMSHome /></PrivateRoute>
+} />
+<Route path="/lms/parcours/:id" element={
+  <PrivateRoute><ParcoursDetail /></PrivateRoute>
+} />
+<Route path="/lms/modules/:id" element={
+  <PrivateRoute><ModuleDetail /></PrivateRoute>
+} />
+<Route path="/lms/cours/:id" element={
+  <PrivateRoute><CoursDetail /></PrivateRoute>
+} />
+<Route path="/lms/progression" element={
+  <PrivateRoute><LMSProgression /></PrivateRoute>
+} />
+<Route path="/parametres" element={
+  <PrivateRoute><Parametres /></PrivateRoute>
+} />
+        <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
     </BrowserRouter>
   );

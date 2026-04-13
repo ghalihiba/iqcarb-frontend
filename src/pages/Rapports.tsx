@@ -5,7 +5,6 @@ import RapportCard              from '@/components/rapports/RapportCard';
 import RapportDetail            from '@/components/rapports/RapportDetail';
 import RapportGenerator         from '@/components/rapports/RapportGenerator';
 import { useRapport }           from '@/hooks/useRapport';
-import type { StatutRapport }   from '@/types/rapport.types';
 import {
   Plus, FileText, CheckCircle,
   AlertCircle, Loader2,

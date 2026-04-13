@@ -4,7 +4,11 @@ import {
   type ReactNode
 } from 'react';
 import authService from '@/services/authService';
-import type { User, AuthContextType } from '@/types/auth.types';
+import type {
+  User,
+  AuthContextType,
+  RegisterRequest
+} from '@/types/auth.types';
 
 export const AuthContext = createContext<AuthContextType | null>(null);
 
@@ -13,15 +17,29 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [token,   setToken]   = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
+  const normalizeUser = useCallback((rawUser: User & { role?: string }): User => {
+    const roles = rawUser.roles?.length
+      ? rawUser.roles
+      : rawUser.role
+        ? [rawUser.role]
+        : ['ETUDIANT'];
+
+    return {
+      ...rawUser,
+      roles,
+      statut_compte: rawUser.statut_compte ?? 'ACTIF',
+    };
+  }, []);
+
   useEffect(() => {
     const storedToken = localStorage.getItem('token');
     const storedUser  = localStorage.getItem('user');
     if (storedToken && storedUser) {
       setToken(storedToken);
-      setUser(JSON.parse(storedUser));
+      setUser(normalizeUser(JSON.parse(storedUser) as User & { role?: string }));
     }
     setLoading(false);
-  }, []);
+  }, [normalizeUser]);
 
   const login = useCallback(async (
     email: string,
@@ -29,12 +47,33 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   ): Promise<User> => {
     const res = await authService.login({ email, password });
     const { token: newToken, utilisateur } = res.data;
+    const normalizedUser = normalizeUser(utilisateur as User & { role?: string });
     localStorage.setItem('token', newToken);
-    localStorage.setItem('user', JSON.stringify(utilisateur));
+    localStorage.setItem('user', JSON.stringify(normalizedUser));
     setToken(newToken);
-    setUser(utilisateur);
-    return utilisateur;
-  }, []);
+    setUser(normalizedUser);
+    return normalizedUser;
+  }, [normalizeUser]);
+
+  const register = useCallback(async (payload: RegisterRequest): Promise<User> => {
+    const res = await authService.register(payload);
+    const { token: newToken, utilisateur } = res.data;
+    const normalizedUser = normalizeUser(utilisateur);
+    localStorage.setItem('token', newToken);
+    localStorage.setItem('user', JSON.stringify(normalizedUser));
+    setToken(newToken);
+    setUser(normalizedUser);
+    return normalizedUser;
+  }, [normalizeUser]);
+
+  const refreshProfile = useCallback(async () => {
+    if (!token) return;
+    const res = await authService.profil();
+    const utilisateur = res.data.utilisateur as User & { role?: string };
+    const normalizedUser = normalizeUser(utilisateur);
+    localStorage.setItem('user', JSON.stringify(normalizedUser));
+    setUser(normalizedUser);
+  }, [token, normalizeUser]);
 
   const logout = useCallback(() => {
     localStorage.removeItem('token');
@@ -49,6 +88,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       token,
       loading,
       login,
+      register,
+      refreshProfile,
       logout,
       isAuthenticated: !!user
     }}>

@@ -1,5 +1,3 @@
-import ExportButton from './ExportButton';
-import type { Rapport } from '@/types/rapport.types';
 import { Eye, Send, Leaf, Download }           from 'lucide-react';
 import type { RapportListItem }       from '@/types/rapport.types';
 import {

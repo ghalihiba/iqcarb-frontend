@@ -1,6 +1,6 @@
 import { Zap, CheckCircle, Clock } from 'lucide-react';
 import type { ActiviteRecente } from '@/types/dashboard.types';
-import { getScopeBadgeClass, formatDate } from '@/utils/formatters';
+import { getScopeBadgeClass } from '@/utils/formatters';
 
 interface RecentActivityProps {
   activites: ActiviteRecente[];
