@@ -12,6 +12,14 @@ const authService = {
   register: (data: RegisterRequest): Promise<{ data: RegisterResponse }> =>
     api.post('/auth/register', data),
   profil: () => api.get('/auth/profil'),
+  updateProfil: (data: {
+    nom: string;
+    prenom: string;
+    telephone?: string;
+    photo_profil?: string;
+  }) => api.put('/auth/profil', data),
+  changePassword: (data: { currentPassword: string; newPassword: string }) =>
+    api.patch('/auth/password', data),
 };
 
 export default authService;

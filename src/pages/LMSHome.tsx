@@ -110,12 +110,22 @@ export default function LMSHome() {
           </div>
 
           <div className="flex justify-end">
-            <Link
-              to="/lms/progression"
-              className="text-sm px-4 py-2 rounded-xl bg-primary-600 hover:bg-primary-700 text-white font-semibold"
-            >
-              Voir ma progression globale
-            </Link>
+            <div className="flex gap-3">
+              <Link
+                to="/lms/progression"
+                className="text-sm px-4 py-2 rounded-xl bg-primary-600 hover:bg-primary-700 text-white font-semibold"
+              >
+                Voir ma progression globale
+              </Link>
+              {['ADMIN', 'FORMATEUR'].includes(rolePrincipale) && (
+                <Link
+                  to="/lms/formateur"
+                  className="text-sm px-4 py-2 rounded-xl bg-gray-900 hover:bg-gray-800 text-white font-semibold"
+                >
+                  Interface formateur
+                </Link>
+              )}
+            </div>
           </div>
 
           {/* Parcours en cours */}

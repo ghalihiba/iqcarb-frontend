@@ -5,23 +5,27 @@ import { useAuth }        from '@/hooks/useAuth';
 import ThemeToggle        from './ThemeToggle';
 import {
   Leaf, LayoutDashboard, Activity,
-  BarChart3, FileText, Settings, LogOut
+  BarChart3, FileText, Settings, LogOut, Award, LifeBuoy
 } from 'lucide-react';
 
 interface NavItem {
   to:    string;
   icon:  React.ElementType;
   label: string;
+  allowedRoles?: string[];
 }
 
 const navItems: NavItem[] = [
   { to: '/dashboard',  icon: LayoutDashboard, label: 'Dashboard'  },
-  { to: '/activites',  icon: Activity,        label: 'Activités'  },
-  { to: '/calculs',    icon: BarChart3,        label: 'Calculs'    },
-  { to: '/rapports',   icon: FileText,         label: 'Rapports'   },
-  { to: '/conformite', icon: Shield, label: 'Conformité' },
-  { to: '/parametres', icon: Settings,         label: 'Paramètres' },
+  { to: '/activites',  icon: Activity,        label: 'Activités', allowedRoles: ['ADMIN', 'ENTREPRISE', 'FORMATEUR', 'AUDITEUR']  },
+  { to: '/calculs',    icon: BarChart3,        label: 'Calculs', allowedRoles: ['ADMIN', 'ENTREPRISE', 'FORMATEUR', 'AUDITEUR']    },
+  { to: '/rapports',   icon: FileText,         label: 'Rapports', allowedRoles: ['ADMIN', 'ENTREPRISE', 'FORMATEUR', 'AUDITEUR']   },
+  { to: '/conformite', icon: Shield, label: 'Conformité', allowedRoles: ['ADMIN', 'ENTREPRISE', 'FORMATEUR', 'AUDITEUR'] },
   { to: '/lms', icon: GraduationCap, label: 'Apprentissage' },
+  { to: '/lms/certificats', icon: Award, label: 'Certificats', allowedRoles: ['ETUDIANT'] },
+  { to: '/support', icon: LifeBuoy, label: 'Support' },
+  { to: '/parametres', icon: Settings,         label: 'Paramètres' },
+  { to: '/lms/formateur', icon: GraduationCap, label: 'Espace Formateur', allowedRoles: ['ADMIN', 'FORMATEUR'] },
 ];
 
 export default function Sidebar() {
@@ -35,6 +39,11 @@ export default function Sidebar() {
 
   const initials =
     `${user?.prenom?.[0] ?? ''}${user?.nom?.[0] ?? ''}`.toUpperCase();
+  const userRoles = user?.roles ?? [];
+  const visibleItems = navItems.filter((item) => {
+    if (!item.allowedRoles?.length) return true;
+    return item.allowedRoles.some((role) => userRoles.includes(role));
+  });
 
   return (
     <aside className="
@@ -61,10 +70,11 @@ export default function Sidebar() {
 
       {/* Navigation */}
       <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
-        {navItems.map(({ to, icon: Icon, label }) => (
+        {visibleItems.map(({ to, icon: Icon, label }) => (
           <NavLink
             key={to}
             to={to}
+            end={to === '/lms'}
             className={({ isActive }) =>
               `flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-sm font-medium ${
                 isActive

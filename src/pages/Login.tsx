@@ -1,43 +1,90 @@
+
 import { useState, type FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
+import { redirectByRole } from '@/hooks/useRoleRedirect';
 import { Leaf, Mail, Lock, AlertCircle, UserCircle2, Briefcase } from 'lucide-react';
 
 export default function Login() {
   const [isRegister, setIsRegister] = useState(false);
-  const [email,      setEmail]      = useState('hibaaa@iqcarb.com');
-  const [password,   setPassword]   = useState('Hiba2025!');
+  const [email,      setEmail]      = useState('');
+  const [password,   setPassword]   = useState('');
   const [nom,        setNom]        = useState('');
   const [prenom,     setPrenom]     = useState('');
   const [role,       setRole]       = useState('ETUDIANT');
   const [error,      setError]      = useState('');
+  const [debugInfo,  setDebugInfo]  = useState('');
   const [loading,    setLoading]    = useState(false);
   const { login, register } = useAuth();
-  const navigate   = useNavigate();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError('');
+    setDebugInfo('');
     setLoading(true);
+
     try {
       if (isRegister) {
-        await register({
-          nom,
-          prenom,
-          email,
-          password,
-          role,
-        });
+        const payload = { nom, prenom, email, password, role };
+        console.log('[REGISTER] Payload envoyé :', payload);
+        await register(payload);
+        redirectByRole(role, navigate);
       } else {
-        await login(email, password);
+        console.log('[LOGIN] Tentative avec :', email);
+        const userData = await login(email, password);
+        const userRole = userData?.roles?.[0] ?? 'ETUDIANT';
+        redirectByRole(userRole, navigate);
       }
-      navigate('/lms');
-    } catch {
-      setError(
-        isRegister
-          ? 'Impossible de créer le compte pour le moment'
-          : 'Email ou mot de passe incorrect'
-      );
+    } catch (err: unknown) {
+      // DEBUG : affiche l'erreur complète dans la console
+      console.error('[AUTH ERROR] Erreur complète :', err);
+
+      // Essaye d'extraire le message du backend
+      let backendMessage = '';
+      if (err && typeof err === 'object') {
+        const e = err as Record<string, unknown>;
+
+        // Axios : e.response.data.message
+        if (e.response && typeof e.response === 'object') {
+          const response = e.response as Record<string, unknown>;
+          if (response.data && typeof response.data === 'object') {
+            const data = response.data as Record<string, unknown>;
+            backendMessage =
+              (data.message as string) ||
+              (data.error as string) ||
+              JSON.stringify(data);
+          }
+          // Affiche le status HTTP
+          setDebugInfo(`HTTP ${response.status} — ${backendMessage}`);
+          console.error('[AUTH ERROR] Réponse backend :', response.status, response.data);
+        } else if (e.message) {
+          backendMessage = e.message as string;
+          setDebugInfo(backendMessage);
+        }
+      }
+
+      // Messages d'erreur clairs selon le code HTTP
+      const status =
+        err && typeof err === 'object'
+          ? ((err as Record<string, unknown>).response as Record<string, unknown>)?.status
+          : null;
+
+      if (isRegister) {
+        if (status === 409) {
+          setError('Cet email est déjà utilisé. Connectez-vous ou utilisez un autre email.');
+        } else if (status === 400) {
+          setError(`Données invalides : ${backendMessage || 'vérifiez les champs.'}`);
+        } else {
+          setError(`Inscription impossible${backendMessage ? ` : ${backendMessage}` : '.'}`);
+        }
+      } else {
+        if (status === 401 || status === 403) {
+          setError('Email ou mot de passe incorrect.');
+        } else {
+          setError(`Connexion impossible${backendMessage ? ` : ${backendMessage}` : '.'}`);
+        }
+      }
     } finally {
       setLoading(false);
     }
@@ -60,9 +107,15 @@ export default function Login() {
 
         {/* Erreur */}
         {error && (
-          <div className="flex items-center gap-2 bg-red-50 border border-red-100 text-red-700 p-3 rounded-xl mb-6">
-            <AlertCircle className="w-4 h-4 flex-shrink-0" />
-            <span className="text-sm">{error}</span>
+          <div className="flex flex-col gap-1 bg-red-50 border border-red-100 text-red-700 p-3 rounded-xl mb-4">
+            <div className="flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 flex-shrink-0" />
+              <span className="text-sm font-semibold">{error}</span>
+            </div>
+            {/* Message de debug visible sous l'erreur */}
+            {debugInfo && (
+              <p className="text-xs text-red-500 pl-6 font-mono break-all">{debugInfo}</p>
+            )}
           </div>
         )}
 
@@ -71,15 +124,15 @@ export default function Login() {
           <div className="flex p-1 bg-gray-100 dark:bg-gray-700 rounded-xl text-sm">
             <button
               type="button"
-              onClick={() => setIsRegister(false)}
-              className={`flex-1 py-2 rounded-lg font-semibold ${!isRegister ? 'bg-white dark:bg-gray-800 text-primary-600' : 'text-gray-500'}`}
+              onClick={() => { setIsRegister(false); setError(''); setDebugInfo(''); }}
+              className={`flex-1 py-2 rounded-lg font-semibold transition-colors ${!isRegister ? 'bg-white dark:bg-gray-800 text-primary-600' : 'text-gray-500'}`}
             >
               Connexion
             </button>
             <button
               type="button"
-              onClick={() => setIsRegister(true)}
-              className={`flex-1 py-2 rounded-lg font-semibold ${isRegister ? 'bg-white dark:bg-gray-800 text-primary-600' : 'text-gray-500'}`}
+              onClick={() => { setIsRegister(true); setError(''); setDebugInfo(''); }}
+              className={`flex-1 py-2 rounded-lg font-semibold transition-colors ${isRegister ? 'bg-white dark:bg-gray-800 text-primary-600' : 'text-gray-500'}`}
             >
               Inscription
             </button>
@@ -97,6 +150,7 @@ export default function Login() {
                     type="text"
                     value={prenom}
                     onChange={e => setPrenom(e.target.value)}
+                    placeholder="Votre prénom"
                     required
                     className="w-full pl-10 pr-4 py-3 border border-gray-200 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                   />
@@ -112,6 +166,7 @@ export default function Login() {
                     type="text"
                     value={nom}
                     onChange={e => setNom(e.target.value)}
+                    placeholder="Votre nom"
                     required
                     className="w-full pl-10 pr-4 py-3 border border-gray-200 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                   />
@@ -167,6 +222,7 @@ export default function Login() {
                 onChange={e => setPassword(e.target.value)}
                 placeholder="••••••••"
                 required
+                minLength={8}
                 className="w-full pl-10 pr-4 py-3 border border-gray-200 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
               />
             </div>
