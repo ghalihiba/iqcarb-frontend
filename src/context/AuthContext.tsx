@@ -26,6 +26,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     return {
       ...rawUser,
+      id: rawUser.id ?? rawUser.id_utilisateur ?? '',
       roles,
       statut_compte: rawUser.statut_compte ?? 'ACTIF',
     };
@@ -75,6 +76,23 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setUser(normalizedUser);
   }, [token, normalizeUser]);
 
+  const updateProfile = useCallback(async (payload: {
+    nom: string;
+    prenom: string;
+    telephone?: string;
+    photo_profil?: string;
+  }) => {
+    const res = await authService.updateProfil(payload);
+    const normalizedUser = normalizeUser(res.data.utilisateur as User & { role?: string });
+    localStorage.setItem('user', JSON.stringify(normalizedUser));
+    setUser(normalizedUser);
+    return normalizedUser;
+  }, [normalizeUser]);
+
+  const changePassword = useCallback(async (currentPassword: string, newPassword: string) => {
+    await authService.changePassword({ currentPassword, newPassword });
+  }, []);
+
   const logout = useCallback(() => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
@@ -89,6 +107,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       loading,
       login,
       register,
+      updateProfile,
+      changePassword,
       refreshProfile,
       logout,
       isAuthenticated: !!user

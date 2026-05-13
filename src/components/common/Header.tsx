@@ -1,4 +1,6 @@
-import { RefreshCw } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { PanelLeftClose, PanelLeftOpen, RefreshCw } from 'lucide-react';
+import PageNotifications from '@/components/common/PageNotifications';
 
 interface Props {
   title:      string;
@@ -7,38 +9,59 @@ interface Props {
 }
 
 export default function Header({ title, subtitle, onRefresh }: Props) {
+  const [collapsed, setCollapsed] = useState<boolean>(() => localStorage.getItem('iq-sidebar-collapsed') === '1');
+
+  useEffect(() => {
+    const onSidebarStateChanged = (event: Event) => {
+      const custom = event as CustomEvent<{ collapsed?: boolean }>;
+      if (typeof custom.detail?.collapsed === 'boolean') {
+        setCollapsed(custom.detail.collapsed);
+      }
+    };
+    window.addEventListener('iq-sidebar-state-changed', onSidebarStateChanged);
+    return () => window.removeEventListener('iq-sidebar-state-changed', onSidebarStateChanged);
+  }, []);
+
+  const toggleSidebar = () => {
+    window.dispatchEvent(new CustomEvent('iq-sidebar-toggle'));
+  };
+
   return (
-    <div className="
-      bg-white dark:bg-gray-800
-      border-b border-gray-100 dark:border-gray-700
-      px-8 py-5 sticky top-0 z-10
-    ">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+    <div className="iq-page-header">
+      <div className="w-full flex items-center justify-between gap-6">
+        <div className="flex items-center gap-3 min-w-0">
+          <button
+            type="button"
+            onClick={toggleSidebar}
+            className="iq-btn-ghost"
+            aria-label={collapsed ? 'Agrandir la sidebar' : 'Réduire la sidebar'}
+            title={collapsed ? 'Agrandir la sidebar' : 'Réduire la sidebar'}
+          >
+            {collapsed ? <PanelLeftOpen className="w-4 h-4" /> : <PanelLeftClose className="w-4 h-4" />}
+          </button>
+          <div className="min-w-0">
+          <h1 className="text-2xl font-bold" style={{ color: 'var(--iq-text-1)', fontFamily: 'var(--iq-font-display)' }}>
             {title}
           </h1>
           {subtitle && (
-            <p className="text-gray-500 dark:text-gray-400 text-sm mt-0.5">
+            <p className="text-sm mt-0.5" style={{ color: 'var(--iq-text-2)' }}>
               {subtitle}
             </p>
           )}
+          </div>
         </div>
-        {onRefresh && (
-          <button
-            onClick={onRefresh}
-            className="
-              flex items-center gap-2 px-4 py-2 rounded-xl
-              text-sm font-medium transition-colors
-              bg-primary-50 dark:bg-primary-900/30
-              text-primary-700 dark:text-primary-400
-              hover:bg-primary-100 dark:hover:bg-primary-900/50
-            "
-          >
-            <RefreshCw className="w-4 h-4" />
-            Actualiser
-          </button>
-        )}
+        <div className="ml-auto flex items-center gap-2">
+          <PageNotifications />
+          {onRefresh && (
+            <button
+              onClick={onRefresh}
+              className="iq-btn-ghost text-sm"
+            >
+              <RefreshCw className="w-4 h-4" />
+              Actualiser
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );

@@ -37,17 +37,17 @@ export default function Rapports() {
   };
 
   return (
-    <div className="flex h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="iq-shell">
       <Sidebar />
 
-      <main className="ml-64 flex-1 overflow-y-auto">
+      <main className="iq-main iq-dotgrid relative">
         <Header
           title="Rapports Carbone"
           subtitle={`${orgNom} — GHG Protocol & ISO 14064`}
           onRefresh={refetch}
         />
 
-        <div className="p-8 space-y-6">
+        <div className="iq-content">
 
           {/* Messages */}
           {success && (
@@ -64,7 +64,7 @@ export default function Rapports() {
           )}
 
           {/* Stats */}
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {[
               {
                 label: 'Total rapports',
@@ -88,8 +88,8 @@ export default function Rapports() {
                 bg:    'bg-blue-50 dark:bg-blue-900/20'
               },
             ].map(({ label, value, icon: Icon, color, bg }) => (
-              <div key={label} className={`${bg} rounded-2xl p-4 border border-white dark:border-gray-700 shadow-sm flex items-center gap-3`}>
-                <div className="w-10 h-10 bg-white dark:bg-gray-700 rounded-xl flex items-center justify-center shadow-sm">
+              <div key={label} className={`${bg} iq-stat-card p-4 flex items-center gap-3`}>
+                <div className="w-10 h-10 iq-soft flex items-center justify-center">
                   <Icon className={`w-5 h-5 ${color}`} />
                 </div>
                 <div>
@@ -101,7 +101,7 @@ export default function Rapports() {
           </div>
 
           {/* Barre d'action */}
-          <div className="flex items-center justify-between">
+          <div className="iq-card p-4 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <BarChart3 className="w-4 h-4 text-gray-400" />
               <p className="text-sm font-semibold text-gray-600 dark:text-gray-300">
@@ -110,7 +110,7 @@ export default function Rapports() {
             </div>
             <button
               onClick={() => setShowGenerator(true)}
-              className="flex items-center gap-2 bg-primary-600 hover:bg-primary-700 text-white font-semibold px-5 py-2.5 rounded-xl transition-all shadow-lg shadow-primary-200 dark:shadow-none text-sm"
+              className="iq-btn-primary text-sm"
             >
               <Plus className="w-4 h-4" />
               Générer un rapport
@@ -123,7 +123,7 @@ export default function Rapports() {
               <Loader2 className="w-10 h-10 animate-spin text-primary-600" />
             </div>
           ) : rapports.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-20 text-gray-400 bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700">
+            <div className="iq-card flex flex-col items-center justify-center py-20 text-gray-400">
               <FileText className="w-14 h-14 mb-4 opacity-20" />
               <p className="font-semibold text-gray-500 dark:text-gray-400">
                 Aucun rapport généré

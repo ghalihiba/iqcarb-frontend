@@ -2,12 +2,14 @@ interface Props {
   value:   number;   // 0–100
   label?:  string;
   color?:  string;
+  pctClassName?: string;
   size?:   'sm' | 'md' | 'lg';
   showPct?: boolean;
 }
 
 export default function ProgressBar({
   value, label, color = 'bg-primary-600',
+  pctClassName,
   size = 'md', showPct = true
 }: Props) {
   const h = size === 'lg' ? 'h-4' : size === 'md' ? 'h-2.5' : 'h-1.5';
@@ -24,7 +26,9 @@ export default function ProgressBar({
           )}
           {showPct && (
             <span className={`text-xs font-bold ${
-              pct === 100
+              pctClassName
+                ? pctClassName
+                : pct === 100
                 ? 'text-green-600 dark:text-green-400'
                 : 'text-primary-600 dark:text-primary-400'
             }`}>

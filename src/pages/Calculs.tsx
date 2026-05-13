@@ -5,6 +5,7 @@ import SimulateurCO2       from '@/components/calculs/SimulateurCO2';
 import ApiStatus           from '@/components/common/ApiStatus';
 import api                 from '@/services/api';
 import organisationService from '@/services/organisationService';
+import { useAuth }         from '@/hooks/useAuth';
 import type { Source }     from '@/types/activite.types';
 import ComparateurScenarios from '@/components/calculs/ComparateurScenarios';
 import {
@@ -64,6 +65,7 @@ const scopeConfig: Record<string, {
 };
 
 export default function Calculs() {
+  const { user } = useAuth();
   const [sources,  setSources]  = useState<Source[]>([]);
   const [bilan,    setBilan]    = useState<Bilan | null>(null);
   const [loading,  setLoading]  = useState(true);
@@ -79,12 +81,14 @@ export default function Calculs() {
         setSources(srcRes.data.data ?? []);
 
         // Charger l'organisation et le bilan
-        const orgRes = await organisationService.getAll();
-        const orgs   = orgRes.data.data;
+        let id: string | null = user?.id_organisation ?? null;
+        if (!id) {
+          const orgRes = await organisationService.getAll();
+          const orgs   = orgRes.data.data;
+          if (orgs && orgs.length > 0) id = orgs[0].id_organisation;
+        }
 
-        if (orgs && orgs.length > 0) {
-          const id = orgs[0].id_organisation;
-
+        if (id) {
           try {
             const bilanRes = await api.get(`/calculs/bilan/${id}?annee=2024`);
             const rawBilan = bilanRes.data.data;
@@ -133,14 +137,14 @@ export default function Calculs() {
     };
 
     fetchData();
-  }, []);
+  }, [user?.id_organisation]);
 
   return (
-    <div className="flex h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="iq-shell">
       <Sidebar />
-      <main className="ml-64 flex-1 overflow-y-auto">
+      <main className="iq-main iq-dotgrid relative">
         <Header title="Calculs Carbone" subtitle="Simulateur CO2e et bilan par scope" />
-        <div className="p-8 space-y-8">
+        <div className="iq-content">
           <div className="flex justify-end"><ApiStatus /></div>
           {error && (
             <div className="flex items-center gap-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-300 p-4 rounded-2xl">
@@ -158,7 +162,7 @@ export default function Calculs() {
           ) : (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <SimulateurCO2 sources={sources} />
-              <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-6">
+              <div className="iq-card p-6">
                 <div className="flex items-center gap-3 mb-6">
                   <div className="w-10 h-10 bg-green-100 dark:bg-green-900/40 rounded-xl flex items-center justify-center">
                     <BarChart3 className="w-5 h-5 text-green-600 dark:text-green-400" />
@@ -201,7 +205,7 @@ export default function Calculs() {
                         </div>
                       );
                     })}
-                    <div className="p-3 bg-gray-50 dark:bg-gray-700 rounded-xl border border-gray-100 dark:border-gray-600">
+                    <div className="p-3 iq-soft">
                       <div className="flex items-center gap-2">
                         <Leaf className="w-4 h-4 text-green-500" />
                         <p className="text-xs font-semibold text-gray-700 dark:text-gray-300">Conforme GHG Protocol · ISO 14064</p>

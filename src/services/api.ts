@@ -4,7 +4,7 @@ import axios, {
   InternalAxiosRequestConfig
 } from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL as string;
+const API_URL = (import.meta.env.VITE_API_URL as string) || 'http://localhost:5000/api';
 
 const api: AxiosInstance = axios.create({
   baseURL: API_URL,

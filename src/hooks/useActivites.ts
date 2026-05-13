@@ -7,6 +7,7 @@ import {
 } from 'react';
 import activiteService from '@/services/activiteService';
 import organisationService from '@/services/organisationService';
+import { useAuth } from '@/hooks/useAuth';
 import type {
   Activite, ActiviteFormData,
   ActiviteFilters, Source
@@ -38,6 +39,7 @@ interface UseActivitesReturn {
 }
 
 export const useActivites = (): UseActivitesReturn => {
+  const { user } = useAuth();
   const [activites,      setActivites]      = useState<Activite[]>([]);
   const [sources,        setSources]        = useState<Source[]>([]);
   const [orgId,          setOrgId]          = useState<string | null>(null);
@@ -53,16 +55,23 @@ export const useActivites = (): UseActivitesReturn => {
 
   // Charger l'organisation de l'utilisateur
   const fetchOrg = useCallback(async () => {
+    if (user?.id_organisation) {
+      setOrgId(user.id_organisation);
+      return;
+    }
     try {
       const res  = await organisationService.getAll();
       const orgs = res.data.data;
       if (orgs && orgs.length > 0) {
-        setOrgId(orgs[0].id_organisation);
+        const org = user?.id_organisation
+          ? orgs.find((item: { id_organisation: string }) => item.id_organisation === user.id_organisation) ?? orgs[0]
+          : orgs[0];
+        setOrgId(org.id_organisation);
       }
     } catch {
       setError('Impossible de charger l\'organisation');
     }
-  }, []);
+  }, [user?.id_organisation]);
 
   // Charger les sources d'émission
   // en haut du fichier
@@ -85,14 +94,18 @@ const fetchSources = useCallback(async () => {
     setLoading(true);
     try {
       const res = await activiteService.getAll(filters);
-      setActivites(res.data.data || []);
-      setTotal(res.data.total || 0);
+      const rows = (res.data.data || []) as Activite[];
+      const filteredRows = user?.id_organisation
+        ? rows.filter((item) => item.id_organisation === user.id_organisation)
+        : rows;
+      setActivites(filteredRows);
+      setTotal(filteredRows.length);
     } catch {
       setError('Impossible de charger les activités');
     } finally {
       setLoading(false);
     }
-  }, [filters]);
+  }, [filters, user?.id_organisation]);
 
   useEffect(() => {
     fetchOrg();

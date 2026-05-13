@@ -35,10 +35,10 @@ export default function Activites() {
   };
 
   return (
-    <div className="flex h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="iq-shell">
       <Sidebar />
 
-      <main className="ml-64 flex-1 overflow-y-auto">
+      <main className="iq-main iq-dotgrid relative">
 
         <Header
           title="Gestion des Activités"
@@ -46,29 +46,29 @@ export default function Activites() {
           onRefresh={refetch}
         />
 
-        <div className="p-8">
+        <div className="iq-content">
 
           {/* Messages */}
           {success && (
-            <div className="flex items-center gap-3 bg-green-50 border border-green-200 text-green-800 p-4 rounded-2xl mb-6 shadow-sm animate-pulse">
+            <div className="flex items-center gap-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-green-800 dark:text-green-300 p-4 rounded-2xl mb-1 shadow-sm">
               <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0" />
               <p className="text-sm font-medium">{success}</p>
             </div>
           )}
 
           {error && (
-            <div className="flex items-center gap-3 bg-red-50 border border-red-200 text-red-800 p-4 rounded-2xl mb-6 shadow-sm">
+            <div className="flex items-center gap-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-800 dark:text-red-300 p-4 rounded-2xl mb-1 shadow-sm">
               <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0" />
               <p className="text-sm font-medium">{error}</p>
             </div>
           )}
 
           {/* Barre d'action */}
-          <div className="flex items-center justify-between mb-6">
+          <div className="iq-card p-4 flex items-center justify-between">
 
             {/* Stats */}
             <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2 bg-white dark:bg-gray-800 px-4 py-2 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm">
+              <div className="flex items-center gap-2 iq-soft px-4 py-2">
                 <Activity className="w-4 h-4 text-primary-600" />
                 <span className="text-sm font-semibold text-gray-700 dark:text-gray-200">
                   {total} activité(s)
@@ -86,7 +86,7 @@ export default function Activites() {
             {/* Button */}
             <button
               onClick={() => setShowForm(true)}
-              className="flex items-center gap-2 bg-primary-600 hover:bg-primary-700 text-white font-semibold px-5 py-2.5 rounded-xl transition-all shadow-lg shadow-primary-200 text-sm"
+              className="iq-btn-primary text-sm"
             >
               <Plus className="w-4 h-4" />
               Nouvelle activité

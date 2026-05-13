@@ -13,41 +13,41 @@ export default function Conformite() {
   const { data, loading, error, refetch } = useConformite();
 
   if (loading) return (
-    <div className="flex h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="iq-shell">
       <Sidebar />
-      <main className="ml-64 flex-1 flex items-center justify-center">
+      <main className="iq-main flex items-center justify-center">
         <LoadingSpinner message="Calcul des indicateurs de conformité..." />
       </main>
     </div>
   );
 
   if (error || !data) return (
-    <div className="flex h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="iq-shell">
       <Sidebar />
-      <main className="ml-64 flex-1 flex items-center justify-center">
+      <main className="iq-main flex items-center justify-center">
         <ErrorMessage message={error ?? 'Erreur'} onRetry={refetch} />
       </main>
     </div>
   );
 
   return (
-    <div className="flex h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="iq-shell">
       <Sidebar />
 
-      <main className="ml-64 flex-1 overflow-y-auto">
+      <main className="iq-main iq-dotgrid relative">
         <Header
           title="Conformité Réglementaire"
           subtitle={`${data.organisation.nom} — GHG Protocol · ISO 14064 · MRV`}
           onRefresh={refetch}
         />
 
-        <div className="p-8 space-y-8">
+        <div className="iq-content">
 
           {/* Score global + Standards */}
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-5">
 
             {/* Jauge globale */}
-            <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-6 flex flex-col items-center justify-center gap-3">
+            <div className="iq-card p-6 flex flex-col items-center justify-center gap-3">
               <p className="text-sm font-bold text-gray-700 dark:text-gray-300">
                 Score global
               </p>
@@ -66,7 +66,7 @@ export default function Conformite() {
             {data.indicateurs_cles.slice(0, 3).map(kpi => (
               <div
                 key={kpi.id}
-                className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-5 flex flex-col justify-between"
+                className="iq-card p-5 flex flex-col justify-between"
               >
                 <div className="flex items-start justify-between mb-3">
                   <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">
@@ -99,7 +99,7 @@ export default function Conformite() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
             {/* Indicateurs par scope */}
-            <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-6">
+            <div className="iq-card p-6">
               <div className="flex items-center gap-2 mb-5">
                 <BarChart3 className="w-5 h-5 text-primary-600 dark:text-primary-400" />
                 <h2 className="text-base font-bold text-gray-900 dark:text-white">
@@ -113,7 +113,7 @@ export default function Conformite() {
             </div>
 
             {/* Standards de conformité */}
-            <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-6">
+            <div className="iq-card p-6">
               <div className="flex items-center gap-2 mb-5">
                 <Shield className="w-5 h-5 text-primary-600 dark:text-primary-400" />
                 <h2 className="text-base font-bold text-gray-900 dark:text-white">
@@ -125,7 +125,7 @@ export default function Conformite() {
           </div>
 
           {/* Tous les KPIs */}
-          <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-6">
+          <div className="iq-card p-6">
             <h2 className="text-base font-bold text-gray-900 dark:text-white mb-5">
               Indicateurs clés de performance carbone
             </h2>

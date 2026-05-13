@@ -46,9 +46,9 @@ export default function LMSProgression() {
 
   if (loading) {
     return (
-      <div className="flex h-screen bg-gray-50 dark:bg-gray-900">
+      <div className="iq-shell">
         <Sidebar />
-        <main className="ml-64 flex-1 flex items-center justify-center">
+        <main className="iq-main flex items-center justify-center">
           <LoadingSpinner message="Chargement de la progression..." />
         </main>
       </div>
@@ -56,11 +56,11 @@ export default function LMSProgression() {
   }
 
   return (
-    <div className="flex h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="iq-shell">
       <Sidebar />
-      <main className="ml-64 flex-1 overflow-y-auto">
+      <main className="iq-main iq-dotgrid relative overflow-y-auto">
         <Header title="Progression globale apprenant" subtitle="Suivi des parcours et avancement global" onRefresh={fetchProgression} />
-        <div className="p-8 space-y-6">
+        <div className="iq-content">
           <LMSBreadcrumb items={[{ label: 'Apprentissage', to: '/lms' }, { label: 'Progression globale' }]} />
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">

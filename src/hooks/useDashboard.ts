@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import dashboardService from '@/services/dashboardService';
 import organisationService from '@/services/organisationService';
+import { useAuth } from '@/hooks/useAuth';
 import type { DashboardData } from '@/types/dashboard.types';
 
 interface UseDashboardReturn {
@@ -12,6 +13,7 @@ interface UseDashboardReturn {
 }
 
 export const useDashboard = (): UseDashboardReturn => {
+  const { user } = useAuth();
   const [dashboard, setDashboard] = useState<DashboardData | null>(null);
   const [orgId,     setOrgId]     = useState<string | null>(null);
   const [loading,   setLoading]   = useState<boolean>(true);
@@ -21,6 +23,13 @@ export const useDashboard = (): UseDashboardReturn => {
     setLoading(true);
     setError(null);
     try {
+      if (user?.id_organisation) {
+        setOrgId(user.id_organisation);
+        const dashRes = await dashboardService.getDashboard(user.id_organisation);
+        setDashboard(dashRes.data.data);
+        return;
+      }
+
       const orgRes = await organisationService.getAll();
       const orgs   = orgRes.data.data;
 
@@ -29,7 +38,9 @@ export const useDashboard = (): UseDashboardReturn => {
         return;
       }
 
-      const org = orgs[0];
+      const org = user?.id_organisation
+        ? orgs.find((item: { id_organisation: string }) => item.id_organisation === user.id_organisation) ?? orgs[0]
+        : orgs[0];
       setOrgId(org.id_organisation);
 
       const dashRes = await dashboardService.getDashboard(
@@ -45,7 +56,7 @@ export const useDashboard = (): UseDashboardReturn => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [user?.id_organisation]);
 
   useEffect(() => { fetchData(); }, [fetchData]);
 

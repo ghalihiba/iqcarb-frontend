@@ -35,14 +35,14 @@ export default function ActiviteList({
   return (
     <div>
       {/* Filtres */}
-      <div className="flex items-center gap-3 mb-6 p-4 bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm">
-        <Filter className="w-4 h-4 text-gray-400 flex-shrink-0" />
-        <p className="text-sm font-semibold text-gray-600 dark:text-gray-300 mr-2">Filtrer :</p>
+      <div className="iq-card flex items-center gap-3 mb-6 p-4">
+        <Filter className="w-4 h-4 flex-shrink-0" style={{ color: 'var(--iq-text-3)' }} />
+        <p className="text-sm font-semibold mr-2" style={{ color: 'var(--iq-text-2)' }}>Filtrer :</p>
 
         <select
           value={filters.scope ?? ''}
           onChange={e => onFilter({ ...filters, scope: e.target.value || undefined, page: 1 })}
-          className="px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200"
+          className="iq-input !w-auto !px-3 !py-2 text-sm"
         >
           {SCOPE_OPTIONS.map(opt => (
             <option key={opt.value} value={opt.value}>
@@ -54,7 +54,7 @@ export default function ActiviteList({
         <select
           value={filters.statut ?? ''}
           onChange={e => onFilter({ ...filters, statut: e.target.value || undefined, page: 1 })}
-          className="px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200"
+          className="iq-input !w-auto !px-3 !py-2 text-sm"
         >
           {STATUT_OPTIONS.map(opt => (
             <option key={opt.value} value={opt.value}>
@@ -63,7 +63,7 @@ export default function ActiviteList({
           ))}
         </select>
 
-        <span className="ml-auto text-sm text-gray-400 dark:text-gray-500 font-medium">
+        <span className="ml-auto text-sm font-medium" style={{ color: 'var(--iq-text-3)' }}>
           {total} activité(s)
         </span>
       </div>
@@ -77,12 +77,12 @@ export default function ActiviteList({
 
       {/* Liste vide */}
       {!loading && activites.length === 0 && (
-        <div className="flex flex-col items-center justify-center py-16 text-gray-400">
+        <div className="iq-card flex flex-col items-center justify-center py-16" style={{ color: 'var(--iq-text-3)' }}>
           <Inbox className="w-12 h-12 mb-3 opacity-30" />
-          <p className="font-medium text-gray-400 dark:text-gray-500">
+          <p className="font-medium">
             Aucune activité trouvée
           </p>
-          <p className="text-sm mt-1 text-gray-400 dark:text-gray-500">
+          <p className="text-sm mt-1">
             Créez votre première activité carbone
           </p>
         </div>

@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import conformiteService   from '@/services/conformiteService';
 import organisationService from '@/services/organisationService';
+import { useAuth }         from '@/hooks/useAuth';
 import type {
   ConformiteData, IndicateurCle,
   IndicateurScope, ConformiteStandard,
@@ -30,6 +31,7 @@ const getStatutKPI = (
 
 // ── Hook principal ────────────────────────────────────────────
 export const useConformite = (): UseConformiteReturn => {
+  const { user } = useAuth();
   const [data,    setData]    = useState<ConformiteData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error,   setError]   = useState<string | null>(null);
@@ -38,12 +40,24 @@ export const useConformite = (): UseConformiteReturn => {
     setLoading(true);
     setError(null);
     try {
-      // Récupérer l'organisation
-      const orgRes = await organisationService.getAll();
-      const org    = orgRes.data.data?.[0];
-      if (!org) throw new Error('Aucune organisation trouvée');
-
-      const orgId = org.id_organisation;
+      let orgId: string;
+      let org: { nom?: string; secteur_activite?: string | null; objectif_reduction_co2?: string | number | null; annee_reference?: number | null };
+      if (user?.id_organisation) {
+        orgId = user.id_organisation;
+        org = {
+          nom: user.nom_organisation ?? 'Organisation',
+          secteur_activite: null,
+          objectif_reduction_co2: null,
+          annee_reference: null,
+        };
+      } else {
+        const orgRes = await organisationService.getAll();
+        const orgs   = orgRes.data.data ?? [];
+        const firstOrg = orgs[0];
+        if (!firstOrg) throw new Error('Aucune organisation trouvée');
+        orgId = firstOrg.id_organisation;
+        org = firstOrg;
+      }
 
       // Charger dashboard + rapports en parallèle
       const [dashRes, listRes, bilanRes] = await Promise.allSettled([
@@ -277,7 +291,7 @@ export const useConformite = (): UseConformiteReturn => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [user?.id_organisation]);
 
   useEffect(() => { fetchData(); }, [fetchData]);
 

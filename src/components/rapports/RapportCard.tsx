@@ -15,13 +15,13 @@ export default function RapportCard({ rapport, onView, onSoumettre }: Props) {
   const cfg = STATUT_CONFIG[rapport.statut] ?? STATUT_CONFIG.BROUILLON;
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-md transition-all p-5">
+    <div className="bg-white dark:bg-[#141e18] rounded-2xl border border-gray-100 dark:border-white/10 shadow-sm hover:shadow-md transition-all p-5">
 
       {/* Header */}
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-primary-100 dark:bg-primary-900/40 rounded-xl flex items-center justify-center">
-            <Leaf className="w-5 h-5 text-primary-600 dark:text-primary-400" />
+          <div className="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center border border-green-200 dark:border-green-800">
+            <Leaf className="w-5 h-5 text-green-700 dark:text-green-400" />
           </div>
           <div>
             <p className="font-bold text-gray-900 dark:text-white">
@@ -56,7 +56,7 @@ export default function RapportCard({ rapport, onView, onSoumettre }: Props) {
       </div>
 
       {/* Standard */}
-      <div className="flex items-center gap-2 p-2 bg-gray-50 dark:bg-gray-700 rounded-xl mb-4">
+      <div className="flex items-center gap-2 p-2 bg-gray-50 dark:bg-white/5 rounded-xl mb-4 border border-gray-100 dark:border-white/10">
         <Leaf className="w-3.5 h-3.5 text-green-500 flex-shrink-0" />
         <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
           {rapport.standard_utilise}
@@ -72,7 +72,7 @@ export default function RapportCard({ rapport, onView, onSoumettre }: Props) {
           {rapport.statut === 'BROUILLON' && (
             <button
               onClick={() => onSoumettre(rapport.id_rapport)}
-              className="flex items-center gap-1.5 bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 text-blue-700 dark:text-blue-400 text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors"
+              className="flex items-center gap-1.5 bg-green-50 dark:bg-green-900/30 hover:bg-green-100 text-green-700 dark:text-green-400 text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors"
             >
               <Send className="w-3 h-3" />
               Soumettre

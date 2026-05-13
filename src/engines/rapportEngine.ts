@@ -39,9 +39,9 @@ export const STATUT_CONFIG: Record<StatutRapport, {
   },
   SOUMIS: {
     label:  'Soumis',
-    color:  'text-blue-700 dark:text-blue-400',
-    bg:     'bg-blue-100 dark:bg-blue-900/30',
-    border: 'border-blue-200 dark:border-blue-800',
+    color:  'text-green-700 dark:text-green-400',
+    bg:     'bg-green-100 dark:bg-green-900/30',
+    border: 'border-green-200 dark:border-green-800',
     step:   2
   },
   VERIFIE: {

@@ -1,0 +1,318 @@
+/**
+ * iqcarb-theme.css
+ * Design System IQcarb — tokens partagés pour toute la plateforme
+ * À importer dans index.css avant @tailwind
+ *
+ * Philosophie : Dark forest intelligence
+ * — Fond charbon profond, accents vert forêt, typographie Syne/JetBrains Mono
+ * — Chaque page respire la même identité visuelle
+ * — Dark mode natif (prefers-color-scheme + classe .dark)
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+/* ─── Tokens globaux ──────────────────────────────────────── */
+/* Light mode par défaut */
+:root {
+  /* Couleurs fondation */
+  --iq-bg:          #f4f9f6;
+  --iq-surface:     #ffffff;
+  --iq-surface-2:   #f8fcfa;
+  --iq-surface-3:   #edf6f0;
+  --iq-border:      rgba(45,106,79,0.12);
+  --iq-border-2:    rgba(45,106,79,0.2);
+
+  /* Textes */
+  --iq-text-1:      #1a3028;
+  --iq-text-2:      rgba(30,80,55,0.7);
+  --iq-text-3:      rgba(30,80,55,0.45);
+
+  /* Accent vert */
+  --iq-green:       #22c55e;
+  --iq-green-dim:   rgba(34,197,94,0.12);
+  --iq-green-mid:   rgba(34,197,94,0.25);
+
+  /* Accent forêt */
+  --iq-forest:      #2d6a4f;
+  --iq-forest-2:    #52b788;
+
+  /* Sémantique */
+  --iq-blue:        #3b82f6;
+  --iq-amber:       #f59e0b;
+  --iq-red:         #ef4444;
+  --iq-purple:      #a855f7;
+
+  /* Shadows */
+  --iq-shadow-sm:   0 2px 10px rgba(45,106,79,0.08);
+  --iq-shadow-md:   0 10px 28px rgba(45,106,79,0.12);
+  --iq-shadow-lg:   0 24px 56px rgba(45,106,79,0.18);
+
+  /* Radius */
+  --iq-r-sm:  8px;
+  --iq-r-md:  12px;
+  --iq-r-lg:  16px;
+  --iq-r-xl:  20px;
+  --iq-r-2xl: 24px;
+
+  /* Transitions */
+  --iq-t-fast:   0.15s cubic-bezier(0.4,0,0.2,1);
+  --iq-t-mid:    0.25s cubic-bezier(0.4,0,0.2,1);
+  --iq-t-slow:   0.4s  cubic-bezier(0.4,0,0.2,1);
+
+  /* Typographie */
+  --iq-font-display: 'Syne', sans-serif;
+  --iq-font-mono:    'JetBrains Mono', monospace;
+}
+
+/* Dark mode */
+.dark {
+  --iq-bg:          #0f1612;
+  --iq-surface:     #141e18;
+  --iq-surface-2:   #1a2820;
+  --iq-surface-3:   #1e2e24;
+  --iq-border:      rgba(255,255,255,0.07);
+  --iq-border-2:    rgba(255,255,255,0.12);
+  --iq-text-1:      #e4ede8;
+  --iq-text-2:      #a0b8aa;
+  --iq-text-3:      #627870;
+  --iq-shadow-sm:   0 2px 8px rgba(0,0,0,0.3);
+  --iq-shadow-md:   0 8px 32px rgba(0,0,0,0.4);
+  --iq-shadow-lg:   0 24px 64px rgba(0,0,0,0.5);
+}
+
+/* ─── Animations globales ─────────────────────────────────── */
+@keyframes iqFadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes iqFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes iqPulse {
+  0%,100% { opacity: 0.5; transform: scale(1); }
+  50%      { opacity: 1;   transform: scale(1.05); }
+}
+@keyframes iqSpin {
+  to { transform: rotate(360deg); }
+}
+@keyframes iqShimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
+}
+@keyframes iqBreathe {
+  0%,100% { opacity: 0.3; }
+  50%      { opacity: 0.6; }
+}
+@keyframes iqCountUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes iqBarGrow {
+  from { width: 0; }
+}
+@keyframes iqDotBlink {
+  0%,100% { opacity: 1; }
+  50%      { opacity: 0.3; }
+}
+
+/* ─── Classes utilitaires partagées ──────────────────────── */
+.iq-page {
+  font-family: var(--iq-font-display);
+  background: var(--iq-bg);
+  color: var(--iq-text-1);
+  min-height: 100vh;
+}
+
+.iq-shell {
+  display: flex;
+  height: 100vh;
+  background: var(--iq-bg);
+  color: var(--iq-text-1);
+  font-family: var(--iq-font-display);
+}
+
+.iq-main {
+  margin-left: var(--iq-sidebar-width, 240px);
+  flex: 1;
+  overflow-y: auto;
+  transition: margin-left var(--iq-t-mid);
+}
+
+.iq-content {
+  padding: 2rem;
+  display: grid;
+  gap: 1.25rem;
+}
+
+.iq-card {
+  background: var(--iq-surface);
+  border: 1px solid var(--iq-border);
+  border-radius: var(--iq-r-xl);
+  box-shadow: var(--iq-shadow-sm);
+  transition: border-color var(--iq-t-mid), background var(--iq-t-mid);
+}
+.iq-card:hover {
+  border-color: var(--iq-border-2);
+}
+
+.iq-card-glass {
+  background: rgba(20,30,24,0.7);
+  backdrop-filter: blur(16px) saturate(1.4);
+  -webkit-backdrop-filter: blur(16px) saturate(1.4);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: var(--iq-r-xl);
+}
+
+.iq-section-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--iq-text-1);
+  letter-spacing: -0.2px;
+  margin: 0;
+}
+.iq-section-sub {
+  font-size: 11px;
+  color: var(--iq-text-3);
+  margin: 3px 0 0;
+}
+
+.iq-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 9px;
+  border-radius: 99px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+.iq-badge-green  { background: rgba(34,197,94,0.1);  color: #22c55e; border: 1px solid rgba(34,197,94,0.22);  }
+.iq-badge-blue   { background: rgba(59,130,246,0.1); color: #3b82f6; border: 1px solid rgba(59,130,246,0.22); }
+.iq-badge-amber  { background: rgba(245,158,11,0.1); color: #f59e0b; border: 1px solid rgba(245,158,11,0.22); }
+.iq-badge-red    { background: rgba(239,68,68,0.1);  color: #ef4444; border: 1px solid rgba(239,68,68,0.22);  }
+.iq-badge-purple { background: rgba(168,85,247,0.1); color: #a855f7; border: 1px solid rgba(168,85,247,0.22); }
+.iq-badge-ghost  { background: rgba(255,255,255,0.05); color: var(--iq-text-2); border: 1px solid var(--iq-border); }
+
+.iq-btn-primary {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 10px 18px;
+  background: linear-gradient(110deg, var(--iq-forest) 0%, var(--iq-forest-2) 100%);
+  color: #fff;
+  font-family: var(--iq-font-display);
+  font-size: 13px; font-weight: 700;
+  border: none; border-radius: var(--iq-r-md);
+  cursor: pointer;
+  transition: opacity var(--iq-t-fast), transform var(--iq-t-fast), box-shadow var(--iq-t-mid);
+  box-shadow: 0 6px 20px rgba(45,106,79,0.3);
+}
+.iq-btn-primary:hover:not(:disabled) {
+  opacity: 0.92;
+  transform: translateY(-1px);
+  box-shadow: 0 10px 28px rgba(45,106,79,0.4);
+}
+.iq-btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.iq-stat-card {
+  background: linear-gradient(140deg, var(--iq-surface-2), var(--iq-surface));
+  border: 1px solid var(--iq-border);
+  border-radius: var(--iq-r-lg);
+  box-shadow: var(--iq-shadow-sm);
+}
+
+.iq-soft {
+  background: var(--iq-surface-2);
+  border: 1px solid var(--iq-border);
+  border-radius: var(--iq-r-md);
+}
+
+.iq-text-subtle { color: var(--iq-text-3); }
+.iq-text-muted { color: var(--iq-text-2); }
+
+.iq-btn-ghost {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 9px 16px;
+  background: rgba(255,255,255,0.04);
+  color: var(--iq-text-2);
+  font-family: var(--iq-font-display);
+  font-size: 13px; font-weight: 600;
+  border: 1px solid var(--iq-border);
+  border-radius: var(--iq-r-md);
+  cursor: pointer;
+  transition: background var(--iq-t-fast), border-color var(--iq-t-fast), color var(--iq-t-fast);
+}
+.iq-btn-ghost:hover {
+  background: rgba(255,255,255,0.08);
+  border-color: var(--iq-border-2);
+  color: var(--iq-text-1);
+}
+
+.iq-input {
+  width: 100%; box-sizing: border-box;
+  padding: 11px 14px;
+  background: rgba(255,255,255,0.04);
+  border: 1.5px solid var(--iq-border);
+  border-radius: var(--iq-r-md);
+  color: var(--iq-text-1);
+  font-family: var(--iq-font-display);
+  font-size: 13px;
+  outline: none;
+  transition: border-color var(--iq-t-fast), box-shadow var(--iq-t-fast), background var(--iq-t-fast);
+}
+.iq-input:focus {
+  border-color: var(--iq-forest-2);
+  box-shadow: 0 0 0 3px rgba(82,183,136,0.14);
+  background: rgba(255,255,255,0.06);
+}
+.iq-input::placeholder { color: var(--iq-text-3); }
+
+.iq-mono {
+  font-family: var(--iq-font-mono);
+}
+
+.iq-live-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--iq-green);
+  animation: iqDotBlink 2.2s ease-in-out infinite;
+}
+
+.iq-progress-track {
+  height: 5px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 99px;
+  overflow: hidden;
+}
+.iq-progress-bar {
+  height: 100%;
+  border-radius: 99px;
+  animation: iqBarGrow 1.2s cubic-bezier(0.4,0,0.2,1) forwards;
+}
+
+/* Grille de points décorative */
+.iq-dotgrid::after {
+  content: '';
+  position: absolute;
+  inset: 0; pointer-events: none;
+  background-image: radial-gradient(circle, rgba(255,255,255,0.035) 1px, transparent 1px);
+  background-size: 28px 28px;
+  z-index: 0;
+}
+
+/* Header page sticky */
+.iq-page-header {
+  position: sticky; top: 0; z-index: 30;
+  background: color-mix(in srgb, var(--iq-bg) 92%, transparent);
+  backdrop-filter: blur(14px) saturate(1.5);
+  -webkit-backdrop-filter: blur(14px) saturate(1.5);
+  border-bottom: 1px solid var(--iq-border);
+  padding: 20px 32px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+
+/* Animations stagger */
+.iq-fade-1 { animation: iqFadeUp 0.5s ease 0.05s both; }
+.iq-fade-2 { animation: iqFadeUp 0.5s ease 0.12s both; }
+.iq-fade-3 { animation: iqFadeUp 0.5s ease 0.19s both; }
+.iq-fade-4 { animation: iqFadeUp 0.5s ease 0.26s both; }
+.iq-fade-5 { animation: iqFadeUp 0.5s ease 0.33s both; }
+.iq-fade-6 { animation: iqFadeUp 0.5s ease 0.40s both; }

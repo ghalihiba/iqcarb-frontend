@@ -4,6 +4,7 @@ import {
 } from 'react';
 import rapportService      from '@/services/rapportService';
 import organisationService from '@/services/organisationService';
+import { useAuth }         from '@/hooks/useAuth';
 import type {
   Rapport, RapportListItem,
   GenerateRapportDTO, StatutRapport
@@ -29,6 +30,7 @@ interface UseRapportReturn {
 }
 
 export const useRapport = (): UseRapportReturn => {
+  const { user } = useAuth();
   const [rapports,      setRapports]      = useState<RapportListItem[]>([]);
   const [rapportDetail, setRapportDetail] = useState<Rapport | null>(null);
   const [orgId,         setOrgId]         = useState<string | null>(null);
@@ -45,8 +47,19 @@ export const useRapport = (): UseRapportReturn => {
     setLoading(true);
     setError(null);
     try {
+      if (user?.id_organisation) {
+        setOrgId(user.id_organisation);
+        setOrgNom(user.nom_organisation ?? '');
+        const rapRes = await rapportService.getListe(user.id_organisation);
+        setRapports(rapRes.data.data ?? []);
+        return;
+      }
+
       const orgRes = await organisationService.getAll();
-      const org    = orgRes.data.data?.[0];
+      const orgs   = orgRes.data.data ?? [];
+      const org    = user?.id_organisation
+        ? orgs.find((item: { id_organisation: string }) => item.id_organisation === user.id_organisation) ?? orgs[0]
+        : orgs[0];
       if (!org) { setError('Aucune organisation trouvée.'); return; }
 
       setOrgId(org.id_organisation);
@@ -59,7 +72,7 @@ export const useRapport = (): UseRapportReturn => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [user?.id_organisation]);
 
   useEffect(() => { fetchData(); }, [fetchData]);
 
@@ -67,7 +80,10 @@ export const useRapport = (): UseRapportReturn => {
   const generer = useCallback(async (
     data: Omit<GenerateRapportDTO, 'id_organisation'>
   ): Promise<boolean> => {
-    if (!orgId) return false;
+    if (!orgId) {
+      setError('Impossible de générer : aucune organisation associée à votre compte.');
+      return false;
+    }
     setGenerating(true);
     setError(null);
     try {
